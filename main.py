@@ -4,12 +4,10 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 
-con = sqlite3.connect("MainData.db")
-cur = con.cursor()
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.title = 'Sport Oracle'
+        self.setWindowTitle("Sport Oracle")
         
         self.main = uic.loadUi('test.ui', self)
         self.Save_Table_Button.clicked.connect(self.saveTable)
@@ -31,11 +29,10 @@ class MyWidget(QMainWindow):
         pass
     
     def loadTable(self):
-        team_name = self.Team_Search.toPlainText()
-        if team_name != "":
-            self.Team_Name_Text.setText("Таблица: " + team_name)
-            print(team_name)
-        # обращаемся к поиску по названию
+        self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
+        if self.file.count(".") == 0:
+            if self.file != "":
+                self.Team_Name_Text.setText("Таблица: " + self.file)
 
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
