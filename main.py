@@ -13,9 +13,14 @@ cur = con.cursor()
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.title = 'asdasdasdasdasd'
         
         self.main = uic.loadUi('test.ui', self)
         self.Add_Tab_Button.clicked.connect(self.addTab)
+        self.New_Row.clicked.connect(self.newRow)
+    
+    def newRow(self):
+        self.Main_Table.insertRow(1)
 
     def addTab(self):
         new_but = QtWidgets.QPushButton(self.centralwidget)
