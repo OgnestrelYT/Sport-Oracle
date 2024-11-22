@@ -2,10 +2,6 @@ import sys
 import sqlite3
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow
-import random
-import string
-import shutil
-import os
 
 
 con = sqlite3.connect("MainData.db")
