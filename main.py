@@ -63,6 +63,7 @@ class MyWidget(QMainWindow):
             self.Error_Text.setText("Не правильное разрешение файла")
     
     def saveTable(self):
+
         pass
 
     def saveAsTable(self):
@@ -71,6 +72,9 @@ class MyWidget(QMainWindow):
         file.show()
     
     def loadTable(self):
+        a = self.Main_Table.rowCount()
+        for i in range(a):
+            self.Main_Table.removeRow(1)
         self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
         if self.file.count(".") == 0:
             if self.file != "":
@@ -89,7 +93,7 @@ class MyWidget(QMainWindow):
                 if self.file.count(".") == 0:
                     if self.file != "":
                         self.Team_Name_Text.setText("Таблица: " + self.file)
-                        for i in range(len(self.result) - 1):
+                        for i in range(len(self.result)):
                             self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
                         for i in range(len(self.result)):
                             self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
