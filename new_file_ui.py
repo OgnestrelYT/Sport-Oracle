@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\Users\arssa\Projects\Sport\Sport-Oracle\saveAs.ui'
+# Form implementation generated from reading ui file 'c:\Users\arssa\Projects\Sport\Sport-Oracle\new_file.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
