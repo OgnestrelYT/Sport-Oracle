@@ -16,17 +16,17 @@ class MyWidget(QMainWindow):
         self.title = 'asdasdasdasdasd'
         
         self.main = uic.loadUi('test.ui', self)
-        self.Add_Tab_Button.clicked.connect(self.addTab)
         self.New_Row.clicked.connect(self.newRow)
+        self.Remove_Row.clicked.connect(self.removeRow)
     
     def newRow(self):
-        self.Main_Table.insertRow(1)
-
-    def addTab(self):
-        new_but = QtWidgets.QPushButton(self.centralwidget)
-        new_but.setFixedSize(QtCore.QSize(100, 100))
-        new_but.setStyleSheet('background-color:red')
-        self.gridLayout.addWidget(new_but, 1, 1)
+        self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+    
+    def removeRow(self):
+        if self.Main_Table.currentRow() == -1:
+            self.Main_Table.removeRow(self.Main_Table.currentRow() + 1)
+        else:
+            self.Main_Table.removeRow(self.Main_Table.currentRow())
 
     def logIn(self):
         self.login = self.Login_Text.toPlainText()
