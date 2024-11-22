@@ -125,9 +125,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="Export_Table_Button">
+        <widget class="QPushButton" name="Sessions_Table_Button">
          <property name="text">
-          <string>Экспорт .xls</string>
+          <string>Расписание сессий</string>
          </property>
         </widget>
        </item>
