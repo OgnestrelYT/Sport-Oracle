@@ -38,6 +38,21 @@
       <height>200</height>
      </size>
     </property>
+    <attribute name="horizontalHeaderCascadingSectionResizes">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>200</number>
+    </attribute>
+    <attribute name="verticalHeaderCascadingSectionResizes">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderStretchLastSection">
+     <bool>false</bool>
+    </attribute>
     <row>
      <property name="text">
       <string>1</string>
@@ -62,38 +77,69 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>20</x>
       <y>50</y>
-      <width>741</width>
+      <width>761</width>
       <height>80</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QTextEdit" name="textEdit"/>
+      <widget class="QTextEdit" name="Team_Search"/>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QPushButton" name="Save_Table_Button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Сохранить таблицу</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="Load_Table_Button">
+         <property name="text">
+          <string>Загрузить таблицу</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="Remove_Row">
-       <property name="text">
-        <string>Remove row</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="New_Row">
-       <property name="text">
-        <string>New column</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QPushButton" name="New_Row">
+         <property name="text">
+          <string>Новая строчка</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="Remove_Row">
+         <property name="text">
+          <string>Удилить строчку</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="Team_Name_Text">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>761</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Не выбрана</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
