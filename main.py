@@ -71,12 +71,13 @@ class MyWidget(QMainWindow):
         file.show()
     
     def loadTable(self):
-        a = self.Main_Table.rowCount()
-        for i in range(a):
-            self.Main_Table.removeRow(1)
         self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
         if self.file.count(".") == 0:
             if self.file != "":
+                a = self.Main_Table.rowCount()
+                for i in range(a):
+                    self.Main_Table.removeRow(0)
+            
                 self.Team_Name_Text.setText("Таблица: " + self.file)
                 self.Error_Text.setText("")
                 self.Save_Table_Button.setEnabled(True) # теперь можно сохранять таблицу
@@ -89,20 +90,21 @@ class MyWidget(QMainWindow):
                 self.result = cur.execute(x).fetchall()
                 self.result = cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
                 self.result.sort(key=lambda x: (x[1], x[2], x[3]))
-                if self.file.count(".") == 0:
-                    if self.file != "":
-                        self.Team_Name_Text.setText("Таблица: " + self.file)
-                        for i in range(len(self.result)):
-                            self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
-                        for i in range(len(self.result)):
-                            self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
-                            self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
-                            self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
-                            self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
+                self.Team_Name_Text.setText("Таблица: " + self.file)
+                for i in range(len(self.result)):
+                    self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+                for i in range(len(self.result)):
+                    self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
+                    self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
+                    self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
+                    self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
         else:
             self.Error_Text.setText("Не правильное разрешение файла")
     
     def sessions(self):
+        a = self.Main_Table.rowCount()
+        for i in range(a):
+            self.Main_Table.removeRow(0)
         self.Sessions_Table_Button.setEnabled(False)
         con = sqlite3.connect("Sessions")
         cur = con.cursor()
