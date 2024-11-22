@@ -69,7 +69,6 @@ class MyWidget(QMainWindow):
         self.new_filename = ""
         file = SaveAs()
         file.show()
-        
     
     def loadTable(self):
         self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
@@ -79,6 +78,24 @@ class MyWidget(QMainWindow):
                 self.Error_Text.setText("")
                 self.Save_Table_Button.setEnabled(True) # теперь можно сохранять таблицу
                 self.Save_As_Table_Button.setEnabled(True) # теперь можно сохранять таблицу как
+                
+                con = sqlite3.connect(self.file)
+                cur = con.cursor()
+                x = "SELECT name FROM sqlite_master WHERE type= 'table' "
+                self.result = cur.execute(x).fetchall()
+                print(self.result[-1][0])
+                self.result = cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
+                self.result.sort(key=lambda x: (x[1], x[2], x[3]))
+                if self.file.count(".") == 0:
+                    if self.file != "":
+                        self.Team_Name_Text.setText("Таблица: " + self.file)
+                        for i in range(len(self.result) - 1):
+                            self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+                        for i in range(len(self.result)):
+                            self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
+                            self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
+                            self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
+                            self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
         else:
             self.Error_Text.setText("Не правильное разрешение файла")
 
