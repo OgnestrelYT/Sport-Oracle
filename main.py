@@ -4,6 +4,31 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 
 
+class Sure(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Are you sure?")
+        
+        self.main = uic.loadUi('sure.ui', self)
+        self.Buttons.accepted.connect(self.accept)
+        self.Buttons.rejected.connect(self.reject)
+    
+    def accept(self):
+        if s.type == "sessions":
+            s.type = ""
+            s.sessions()
+        elif s.type == "loadTable":
+            s.type = ""
+            s.loadTable()
+        elif s.type == "createNewFile":
+            s.type = ""
+            s.createNewFile()
+        self.hide()
+
+    def reject(self):
+        self.hide()
+
+
 class NewFile(QDialog):
     def __init__(self):
         super().__init__()
@@ -34,10 +59,10 @@ class MyWidget(QMainWindow):
         self.setWindowTitle("Sport Oracle")
         
         self.main = uic.loadUi('test.ui', self)
-        self.Sessions_Table_Button.clicked.connect(self.sessions)
-        self.Create_New_File_Button.clicked.connect(self.createNewFile)
+        self.Sessions_Table_Button.clicked.connect(self.sessionsBefore)
+        self.Create_New_File_Button.clicked.connect(self.createNewFileAfter)
         self.Save_Table_Button.clicked.connect(self.saveTable)
-        self.Load_Table_Button.clicked.connect(self.loadTable)
+        self.Load_Table_Button.clicked.connect(self.loadTableAfter)
         self.New_Row.clicked.connect(self.newRow)
         self.Remove_Row.clicked.connect(self.removeRow)
         s = self
@@ -66,6 +91,11 @@ class MyWidget(QMainWindow):
     
     def saveTable(self):
         pass
+    
+    def createNewFileAfter(self):
+        self.type = "createNewFile"
+        ses = Sure()
+        ses.show()
 
     def createNewFile(self):
         self.new_filename = ""
@@ -78,6 +108,11 @@ class MyWidget(QMainWindow):
         a = self.Main_Table.rowCount()
         for i in range(a):
             self.Main_Table.removeRow(0)
+    
+    def loadTableAfter(self):
+        self.type = "loadTable"
+        ses = Sure()
+        ses.show()
     
     def loadTable(self):
         self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
@@ -108,6 +143,11 @@ class MyWidget(QMainWindow):
                     self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
         else:
             self.Error_Text.setText("Не правильное разрешение файла")
+    
+    def sessionsBefore(self):
+        self.type = "sessions"
+        ses = Sure()
+        ses.show()
     
     def sessions(self):
         a = self.Main_Table.rowCount()
