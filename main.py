@@ -9,7 +9,7 @@ cur = con.cursor()
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.title = 'Sport Oracle'
+        self.setWindowTitle("Sport Oracle")
         
         self.main = uic.loadUi('test.ui', self)
         self.Save_Table_Button.clicked.connect(self.saveTable)
@@ -31,10 +31,11 @@ class MyWidget(QMainWindow):
         pass
     
     def loadTable(self):
-        team_name = self.Team_Search.toPlainText()
-        if team_name != "":
-            self.Team_Name_Text.setText("Таблица: " + team_name)
-            print(team_name)
+        self.file_name = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')
+        print(self.file_name)
+        # if team_name != "":
+        #     self.Team_Name_Text.setText("Таблица: " + team_name)
+        #     print(team_name)
         # обращаемся к поиску по названию
 
 def except_hook(cls, exception, traceback):
