@@ -335,6 +335,7 @@ class MyWidget(QMainWindow):
         for i in self.result:
             print(i)
             day = i[2]
+            print(day)
             mounth = i[1]
             if mounth == '09':
                 days[day - 1] *= 1
