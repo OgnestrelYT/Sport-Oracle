@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(801, 558)
+        MainWindow.resize(801, 615)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.Main_Table = QtWidgets.QTableWidget(self.centralwidget)
@@ -93,6 +93,9 @@ class Ui_MainWindow(object):
         self.Remove_Row.setObjectName("Remove_Row")
         self.verticalLayout_5.addWidget(self.Remove_Row)
         self.horizontalLayout.addLayout(self.verticalLayout_5)
+        self.Combo_Box = QtWidgets.QComboBox(self.centralwidget)
+        self.Combo_Box.setGeometry(QtCore.QRect(20, 520, 271, 41))
+        self.Combo_Box.setObjectName("Combo_Box")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 801, 21))
