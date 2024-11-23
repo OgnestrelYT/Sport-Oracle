@@ -197,7 +197,12 @@ class MyWidget(QMainWindow):
                             self.Combo_Box.addItem(str(self.yearsList[i][0]))
                         else:
                             self.Combo_Box.addItem(str(self.yearsList[i][0][0:5]) + "-20" + str(int(self.yearsList[i][0][7:9]) + 1))
-                    
+                    g = self.Main_Table.columnCount()
+                    for i in range(g):
+                        self.Main_Table.removeColumn(0)
+                    for i in range(3):
+                        self.Main_Table.insertColumn(0)
+                    self.Main_Table.setHorizontalHeaderLabels(["Дата", "Счёт", "Результат"])
                     x = "SELECT name FROM sqlite_master WHERE type= 'table' "
                     self.result = self.cur.execute(x).fetchall()
                     if self.Combo_Box.count() > 0:
@@ -323,7 +328,148 @@ class MyWidget(QMainWindow):
     def results(self):
         msg = QtWidgets.QMessageBox()
         days = [1] * 365
+        self.con = sqlite3.connect(self.db_path + "Sessions")
+        self.cur = self.con.cursor()
+        self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
 
+        for i in self.result:
+            print(i)
+            day = i[2]
+            mounth = i[1]
+            if mounth == '09':
+                days[day - 1] *= 1
+            if mounth == '10':
+                days[day - 1 + 30] *= 1
+            if mounth == '11':
+                days[day - 1 + 61] *= 1
+            if mounth == '12':
+                days[day - 1 + 91] *= 1
+            if mounth == '01' or mounth == '1':
+                days[day - 1 + 122] *= 1
+            if mounth == '02' or mounth == '2':
+                days[day - 1 + 152] *= 1
+            if mounth == '03' or mounth == '3':
+                days[day - 1 + 183] *= 1
+            if mounth == '04' or mounth == '4':
+                days[day - 1 + 213] *= 1
+            if mounth == '05' or mounth == '5':
+                days[day - 1 + 244] *= 1
+            if mounth == '06' or mounth == '6':
+                days[day - 1 + 274] *= 1
+            if mounth == '07' or mounth == '7':
+                days[day - 1 + 305] *= 1
+            if mounth == '08' or mounth == '8':
+                days[day - 1 + 335] *= 1
+
+        wr = {'01: [1,1]',
+              '02: [1,1]',
+              '03: [1,1]',
+              '04: [1,1]',
+              '05: [1,1]',
+              '06: [1,1]',
+              '07: [1,1]',
+              '08: [1,1]',
+              '09: [1,1]',
+              '10: [1,1]',
+              '11: [1,1]',
+              '12: [1,1]'}
+        self.con = sqlite3.connect(self.db_path + self.file)
+        self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
+        for i in self.result:
+            mounth = i[1]
+            if mounth == '09':
+                if 'поб' in i[4]:
+                    wr['09'][0] += 1
+                else:
+                    wr['09'][1] += 1
+            if mounth == '10':
+                if 'поб' in i[4]:
+                    wr['10'][0] += 1
+                else:
+                    wr['10'][1] += 1
+            if mounth == '11':
+                if 'поб' in i[4]:
+                    wr['11'][0] += 1
+                else:
+                    wr['11'][1] += 1
+            if mounth == '12':
+                if 'поб' in i[4]:
+                    wr['12'][0] += 1
+                else:
+                    wr['12'][1] += 1
+            if mounth == '01' or mounth == '1':
+                if 'поб' in i[4]:
+                    wr['01'][0] += 1
+                else:
+                    wr['01'][1] += 1
+            if mounth == '02' or mounth == '2':
+                if 'поб' in i[4]:
+                    wr['02'][0] += 1
+                else:
+                    wr['02'][1] += 1
+            if mounth == '03' or mounth == '3':
+                if 'поб' in i[4]:
+                    wr['03'][0] += 1
+                else:
+                    wr['03'][1] += 1
+            if mounth == '04' or mounth == '4':
+                if 'поб' in i[4]:
+                    wr['04'][0] += 1
+                else:
+                    wr['04'][1] += 1
+            if mounth == '05' or mounth == '5':
+                if 'поб' in i[4]:
+                    wr['05'][0] += 1
+                else:
+                    wr['05'][1] += 1
+            if mounth == '06' or mounth == '6':
+                if 'поб' in i[4]:
+                    wr['06'][0] += 1
+                else:
+                    wr['06'][1] += 1
+            if mounth == '07' or mounth == '7':
+                if 'поб' in i[4]:
+                    wr['07'][0] += 1
+                else:
+                    wr['07'][1] += 1
+            if mounth == '08' or mounth == '8':
+                if 'поб' in i[4]:
+                    wr['08'][0] += 1
+                else:
+                    wr['08'][1] += 1
+
+            for i in self.result:
+                day = i[2]
+                mounth = i[1]
+                if mounth == '09':
+                    days[day - 1] *= wr['09'][0] / wr['09'][1]
+                if mounth == '10':
+                    days[day - 1 + 30] *= wr['10'][0] / wr['10'][1]
+                if mounth == '11':
+                    days[day - 1 + 61] *= wr['11'][0] / wr['11'][1]
+                if mounth == '12':
+                    days[day - 1 + 91] *= wr['12'][0] / wr['12'][1]
+                if mounth == '01' or mounth == '1':
+                    days[day - 1 + 122] *= wr['01'][0] / wr['01'][1]
+                if mounth == '02' or mounth == '2':
+                    days[day - 1 + 152] *= wr['02'][0] / wr['02'][1]
+                if mounth == '03' or mounth == '3':
+                    days[day - 1 + 183] *= wr['03'][0] / wr['03'][1]
+                if mounth == '04' or mounth == '4':
+                    days[day - 1 + 213] *= wr['04'][0] / wr['04'][1]
+                if mounth == '05' or mounth == '5':
+                    days[day - 1 + 244] *= wr['05'][0] / wr['05'][1]
+                if mounth == '06' or mounth == '6':
+                    days[day - 1 + 274] *= wr['06'][0] / wr['06'][1]
+                if mounth == '07' or mounth == '7':
+                    days[day - 1 + 305] *= wr['07'][0] / wr['07'][1]
+                if mounth == '08' or mounth == '8':
+                    days[day - 1 + 335] *= wr['08'][0] / wr['08'][1]
+
+        print(days)
+        for i in days:
+            if i != max(days):
+                print(i)
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setText('Информация\n1\n2')
         msg.setWindowTitle('Результат')
