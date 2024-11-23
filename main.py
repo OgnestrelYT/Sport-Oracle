@@ -144,8 +144,11 @@ class MyWidget(QMainWindow):
                 self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
                 self.Combo_Box.clear()
                 self.yearsList = list(self.yearsList)
-                for i in range(0, len(self.yearsList) - 1):
-                    self.Combo_Box.addItem(str(self.yearsList[i])[2:-3] + "/" + str(self.yearsList[i+1])[4:-3])
+                if self.yearsList > 1:
+                    for i in range(0, len(self.yearsList) - 1):
+                        self.Combo_Box.addItem(str(self.yearsList[i])[2:-3] + "/" + str(self.yearsList[i+1])[4:-3])
+                else:
+                    self.Combo_Box.addItem(str(self.yearsList[0])[2:-3] + "/" + str(int(self.yearsList[i][4:-3]) + 1))
 
                 self.Team_Name_Text.setText("Таблица: " + self.file)
                 self.Error_Text.setText("")
