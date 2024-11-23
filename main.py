@@ -4,6 +4,34 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 
 
+def Time(day):
+
+    if 0 <= day < 31:
+        return '09.' + str(day + 1)
+    elif day < 62:
+        return '10.' + str(day - 31)
+    elif day < 92:
+        return '11.' + str(day - 61)
+    elif day < 123:
+        return '12.' + str(day - 92)
+    elif day < 154:
+        return '01.' + str(day - 122)
+    elif day < 184:
+        return '02.' + str(day - 153)
+    elif day < 215:
+        return '03.' + str(day - 183)
+    elif day < 245:
+        return '04.' + str(day - 214)
+    elif day < 276:
+        return '05.' + str(day - 244)
+    elif day < 306:
+        return '06.' + str(day - 275)
+    elif day < 337:
+        return '07.' + str(day - 305)
+    elif day < 366:
+        return '08.' + str(day - 336)
+
+
 class NewTabel(QDialog):
     def __init__(self):
         super().__init__()
@@ -182,7 +210,8 @@ class MyWidget(QMainWindow):
         self.type = "loadTable"
         ses = Sure()
         ses.show()
-    
+
+
     def loadTable(self):
         self.s = False
         self.showButtons(True)
@@ -330,6 +359,8 @@ class MyWidget(QMainWindow):
             self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()
             self.Combo_Box.addItem(str(self.yearsList[-1][0]))
 
+
+
     def results(self):
         msg = QtWidgets.QMessageBox()
         days = [1] * 365
@@ -391,12 +422,34 @@ class MyWidget(QMainWindow):
                 l[2] = int(l[2]) + 336
             re = l[2]
 
-            for i in range(le - 14, re + 14):
+            for i in range(le, re):
                 days[i] = 0
-        print(days)
+        dates = []
+        for j in range(len(days)):
+            if l == 0 and days[j] == 1:
+                l = j
+            if l != 0 and days[j] == 0:
+                c = self.Combo_Box.currentText().split('-')
+                a = Time(l[2])
+                if a.split('.')[0] in ['09', '10', '11', '12']:
+                    a = c[0] + '.' + a
+                else:
+                    a = c[1] + '.' + a
+
+                b = Time(j)
+                if b.split('.')[0] in ['09', '10', '11', '12']:
+                    b = c[1] + '.' + b
+                else:
+                    b = c[0] + '.' + b
+
+                dates.append([a, b])
+                l = 0
+        strok = ''
+        for i in dates:
+            strok = i[0] + '-' + i[1] + '\n'
 
         msg.setIcon(QtWidgets.QMessageBox.Information)
-        msg.setText('Информация\n1\n2')
+        msg.setText(strok)
         msg.setWindowTitle('Результат')
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
         retval = msg.exec_()
