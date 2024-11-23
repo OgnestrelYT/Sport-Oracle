@@ -166,7 +166,7 @@
        <item>
         <widget class="QPushButton" name="Remove_Row">
          <property name="text">
-          <string>Удилить строчку</string>
+          <string>Удалить строчку</string>
          </property>
         </widget>
        </item>

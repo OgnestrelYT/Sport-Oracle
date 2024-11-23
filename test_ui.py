@@ -122,4 +122,4 @@ class Ui_MainWindow(object):
         self.Save_Table_Button.setText(_translate("MainWindow", "Сохранить"))
         self.Load_Table_Button.setText(_translate("MainWindow", "Загрузить таблицу"))
         self.New_Row.setText(_translate("MainWindow", "Новая строчка"))
-        self.Remove_Row.setText(_translate("MainWindow", "Удилить строчку"))
+        self.Remove_Row.setText(_translate("MainWindow", "Удалить строчку"))
