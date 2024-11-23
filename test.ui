@@ -42,7 +42,7 @@
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>200</number>
+     <number>240</number>
     </attribute>
     <attribute name="verticalHeaderCascadingSectionResizes">
      <bool>false</bool>
@@ -115,12 +115,12 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="Save_As_Table_Button">
+        <widget class="QPushButton" name="Create_New_File_Button">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="text">
-          <string>Сохранить как</string>
+          <string>Создать</string>
          </property>
         </widget>
        </item>
