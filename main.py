@@ -132,6 +132,7 @@ class MyWidget(QMainWindow):
         ses.show()
     
     def loadTable(self):
+        self.s = False
         self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
         if self.file.count(".") == 0:
             if self.file != "":
@@ -174,32 +175,46 @@ class MyWidget(QMainWindow):
         a = self.Main_Table.rowCount()
         for i in range(a):
             self.Main_Table.removeRow(0)
-        x = "SELECT name FROM sqlite_master WHERE type= 'table' "
-        self.result = self.cur.execute(x).fetchall()
-        self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
-        self.result.sort(key=lambda x: (x[1], x[2], x[3]))
-        self.Team_Name_Text.setText("Таблица: " + self.file)
-        for i in range(len(self.result)):
-            self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
-        for i in range(len(self.result)):
-            self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
-            self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
-            self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
-            self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
-    
+        if self.s != True:
+            x = "SELECT name FROM sqlite_master WHERE type= 'table' "
+            self.result = self.cur.execute(x).fetchall()
+            self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
+            self.result.sort(key=lambda x: (x[1], x[2], x[3]))
+            self.Team_Name_Text.setText("Таблица: " + self.file)
+            for i in range(len(self.result)):
+                self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+            for i in range(len(self.result)):
+                self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
+                self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
+                self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
+                self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
+        else:
+            self.con = sqlite3.connect(self.db_path + 'Sessions')
+            a = self.Main_Table.rowCount()
+            for i in range(a):
+                self.Main_Table.removeRow(0)
+            self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
+            self.result.sort(key=lambda x: (x[1], x[2], x[3]))
+            for i in range(len(self.result)):
+                self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+            for i in range(len(self.result)):
+                self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
+                self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
+                self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
+                self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
     def sessionsBefore(self):
         self.type = "sessions"
         ses = Sure()
         ses.show()
     
     def sessions(self):
+        self.s = True
         self.Sessions_Table_Button.setEnabled(False)
         self.con = sqlite3.connect(self.db_path + "Sessions")
         self.cur = self.con.cursor()
         
-        self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()
         self.Combo_Box.clear()
-        self.yearsList = list(self.yearsList)
         if len(self.yearsList) > 1:
             for i in range(len(self.yearsList)):
                 self.Combo_Box.addItem(str(self.yearsList[i])[2:-3])
