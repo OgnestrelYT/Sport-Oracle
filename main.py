@@ -65,6 +65,7 @@ class MyWidget(QMainWindow):
         self.Load_Table_Button.clicked.connect(self.loadTableAfter)
         self.New_Row.clicked.connect(self.newRow)
         self.Remove_Row.clicked.connect(self.removeRow)
+        self.Combo_Box.currentTextChanged.connect(self.boxChange)
         s = self
         
         self.exaple_path = "Example"
@@ -96,11 +97,11 @@ class MyWidget(QMainWindow):
         a = self.Main_Table.rowCount()
         self.Error_Text.setText("")
         dmd = self.date.split('.')
-        x = self.cur.execute("DELETE FROM " + f"'{dmd[0]}'").fetchall()
+        x = self.cur.execute("DELETE FROM " + f"'{self.Combo_Box.currentText()}'").fetchall()
         for i in range(1, a + 1):
             try:
                 dmd = self.Main_Table.item(i - 1, 0).text().split('.')
-                x = '''INSERT INTO''' + f"'{dmd[0]}'" + '''(id, Year, Mounth, Day, Score, Result) VALUES(?,?,?,?,?,?);'''
+                x = '''INSERT INTO''' + f"'{self.Combo_Box.currentText()}'" + '''(id, Year, Mounth, Day, Score, Result) VALUES(?,?,?,?,?,?);'''
                 self.result = self.cur.execute(x, (i, dmd[0],dmd[1],dmd[2], self.Main_Table.item(i - 1, 1).text(), self.Main_Table.item(i - 1, 2).text())).fetchall()
             except:
                 self.Error_Text.setText("Ошибка в " + str(i) + " строке")
@@ -134,21 +135,21 @@ class MyWidget(QMainWindow):
         self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
         if self.file.count(".") == 0:
             if self.file != "":
-                a = self.Main_Table.rowCount()
-                for i in range(a):
-                    self.Main_Table.removeRow(0)
-                
                 self.con = sqlite3.connect(self.db_path + self.file)
                 self.cur = self.con.cursor()
                 
                 self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
                 self.Combo_Box.clear()
                 self.yearsList = list(self.yearsList)
-                if self.yearsList > 1:
-                    for i in range(0, len(self.yearsList) - 1):
-                        self.Combo_Box.addItem(str(self.yearsList[i])[2:-3] + "/" + str(self.yearsList[i+1])[4:-3])
+                if len(self.yearsList) > 1:
+                    for i in range(len(self.yearsList)):
+                        self.Combo_Box.addItem(str(self.yearsList[i])[2:-3])
                 else:
-                    self.Combo_Box.addItem(str(self.yearsList[0])[2:-3] + "/" + str(int(self.yearsList[i][4:-3]) + 1))
+                    self.Combo_Box.addItem(str(self.yearsList[0])[2:-3] + "-20" + str(int(self.yearsList[i][4:-3]) + 1))
+                    
+                a = self.Main_Table.rowCount()
+                for i in range(a):
+                    self.Main_Table.removeRow(0)
 
                 self.Team_Name_Text.setText("Таблица: " + self.file)
                 self.Error_Text.setText("")
@@ -157,9 +158,8 @@ class MyWidget(QMainWindow):
                 
                 x = "SELECT name FROM sqlite_master WHERE type= 'table' "
                 self.result = self.cur.execute(x).fetchall()
-                self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
+                self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
                 self.result.sort(key=lambda x: (x[1], x[2], x[3]))
-                self.Team_Name_Text.setText("Таблица: " + self.file)
                 for i in range(len(self.result)):
                     self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
                 for i in range(len(self.result)):
@@ -170,18 +170,46 @@ class MyWidget(QMainWindow):
         else:
             self.Error_Text.setText("Не правильное разрешение файла")
     
+    def boxChange(self):
+        a = self.Main_Table.rowCount()
+        for i in range(a):
+            self.Main_Table.removeRow(0)
+        x = "SELECT name FROM sqlite_master WHERE type= 'table' "
+        self.result = self.cur.execute(x).fetchall()
+        self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
+        self.result.sort(key=lambda x: (x[1], x[2], x[3]))
+        self.Team_Name_Text.setText("Таблица: " + self.file)
+        for i in range(len(self.result)):
+            self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+        for i in range(len(self.result)):
+            self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
+            self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
+            self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
+            self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
+    
     def sessionsBefore(self):
         self.type = "sessions"
         ses = Sure()
         ses.show()
     
     def sessions(self):
-        a = self.Main_Table.rowCount()
-        for i in range(a):
-            self.Main_Table.removeRow(0)
         self.Sessions_Table_Button.setEnabled(False)
         self.con = sqlite3.connect(self.db_path + "Sessions")
         self.cur = self.con.cursor()
+        
+        self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        self.Combo_Box.clear()
+        self.yearsList = list(self.yearsList)
+        if len(self.yearsList) > 1:
+            for i in range(len(self.yearsList)):
+                self.Combo_Box.addItem(str(self.yearsList[i])[2:-3])
+        else:
+            self.Combo_Box.addItem(str(self.yearsList[0])[2:-3] + "-20" + str(int(self.yearsList[i][4:-3]) + 1))
+            
+        a = self.Main_Table.rowCount()
+        for i in range(a):
+            self.Main_Table.removeRow(0)
+        
         x = "SELECT name FROM sqlite_master WHERE type= 'table' "
         self.result = self.cur.execute(x).fetchall()
         self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
