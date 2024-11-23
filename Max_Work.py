@@ -64,7 +64,17 @@ class MyWidget(QMainWindow):
             self.Error_Text.setText("Не правильное разрешение файла")
 
     def saveTable(self):
-        pass
+        print(self.date)
+        a = self.Main_Table.rowCount()
+        dmd = self.date.split('.')
+        print(dmd)
+        x = self.cur.execute("DELETE FROM " + f"'{dmd[0]}'").fetchall()
+        for i in range(1,a + 1):
+            dmd = self.Main_Table.item(i - 1, 0).text().split('.')
+            x = '''INSERT INTO''' + f"'{dmd[0]}'" + '''(id, Year, Mounth, Day, Score, Result) VALUES(?,?,?,?,?,?);'''
+            self.result = self.cur.execute(x, (i, dmd[0],dmd[1],dmd[2], self.Main_Table.item(i - 1, 1).text(), self.Main_Table.item(i - 1, 2).text())).fetchall()
+            self.con.commit()
+
 
     def saveAsTable(self):
         self.new_filename = ""
@@ -85,11 +95,11 @@ class MyWidget(QMainWindow):
                 self.Save_As_Table_Button.setEnabled(True)  # теперь можно сохранять таблицу как
                 self.Sessions_Table_Button.setEnabled(True)
 
-                con = sqlite3.connect(self.file)
-                cur = con.cursor()
+                self.con = sqlite3.connect(self.file)
+                self.cur = self.con.cursor()
                 x = "SELECT name FROM sqlite_master WHERE type= 'table' "
-                self.result = cur.execute(x).fetchall()
-                self.result = cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
+                self.result = self.cur.execute(x).fetchall()
+                self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
                 self.result.sort(key=lambda x: (x[1], x[2], x[3]))
                 self.Team_Name_Text.setText("Таблица: " + self.file)
                 for i in range(len(self.result)):
