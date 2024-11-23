@@ -148,7 +148,7 @@
        <item>
         <widget class="QPushButton" name="Load_Table_Button">
          <property name="text">
-          <string>Загрузить таблицу</string>
+          <string>Загрузить базу данных</string>
          </property>
         </widget>
        </item>
@@ -182,6 +182,24 @@
       <width>271</width>
       <height>41</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Update_Table">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>520</y>
+      <width>311</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Добавить новый учебный год</string>
     </property>
    </widget>
   </widget>
