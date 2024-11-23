@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>830</width>
-    <height>771</height>
+    <width>1088</width>
+    <height>684</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Sport Oracle</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTableWidget" name="Main_Table">
@@ -22,8 +22,8 @@
      <rect>
       <x>10</x>
       <y>100</y>
-      <width>761</width>
-      <height>411</height>
+      <width>1071</width>
+      <height>471</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -38,11 +38,16 @@
       <height>200</height>
      </size>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
     <attribute name="horizontalHeaderCascadingSectionResizes">
      <bool>false</bool>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>240</number>
+     <number>350</number>
     </attribute>
     <attribute name="verticalHeaderCascadingSectionResizes">
      <bool>false</bool>
@@ -79,7 +84,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>761</width>
+      <width>1071</width>
       <height>80</height>
      </rect>
     </property>
@@ -88,6 +93,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QLabel" name="Error_Text">
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <pointsize>14</pointsize>
@@ -119,6 +130,11 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Создать</string>
          </property>
@@ -126,6 +142,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="Sessions_Table_Button">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Расписание сессий</string>
          </property>
@@ -140,6 +161,11 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Сохранить</string>
          </property>
@@ -147,6 +173,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="Load_Table_Button">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Загрузить базу данных</string>
          </property>
@@ -161,6 +192,11 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Новая строчка</string>
          </property>
@@ -170,6 +206,11 @@
         <widget class="QPushButton" name="Remove_Row_Button">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
          </property>
          <property name="text">
           <string>Удалить строчку</string>
@@ -184,9 +225,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>520</y>
-      <width>761</width>
-      <height>80</height>
+      <y>580</y>
+      <width>1071</width>
+      <height>51</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -203,9 +244,36 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="Update_Table_Button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Добавить новый учебный год</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="Result_Button">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>270</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="font">
         <font>
@@ -219,21 +287,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="Update_Table_Button">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Добавить новый учебный год</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
   </widget>
@@ -242,8 +295,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>830</width>
-     <height>22</height>
+     <width>1088</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
