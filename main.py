@@ -93,7 +93,18 @@ class MyWidget(QMainWindow):
             self.Error_Text.setText("Не правильное разрешение файла")
     
     def saveTable(self):
-        pass
+        a = self.Main_Table.rowCount()
+        self.Error_Text.setText("")
+        dmd = self.date.split('.')
+        x = self.cur.execute("DELETE FROM " + f"'{dmd[0]}'").fetchall()
+        for i in range(1, a + 1):
+            try:
+                dmd = self.Main_Table.item(i - 1, 0).text().split('.')
+                x = '''INSERT INTO''' + f"'{dmd[0]}'" + '''(id, Year, Mounth, Day, Score, Result) VALUES(?,?,?,?,?,?);'''
+                self.result = self.cur.execute(x, (i, dmd[0],dmd[1],dmd[2], self.Main_Table.item(i - 1, 1).text(), self.Main_Table.item(i - 1, 2).text())).fetchall()
+            except:
+                self.Error_Text.setText("Ошибка в " + str(i) + " строке")
+            self.con.commit()
     
     def createNewFileAfter(self):
         self.type = "createNewFile"
@@ -108,6 +119,7 @@ class MyWidget(QMainWindow):
     def newFile(self):
         self.Team_Name_Text.setText("Таблица: " + self.new_filename)
         self.Sessions_Table_Button.setEnabled(True)
+        self.Save_Table_Button.setEnabled(True)
         a = self.Main_Table.rowCount()
         for i in range(a):
             self.Main_Table.removeRow(0)
@@ -131,11 +143,11 @@ class MyWidget(QMainWindow):
                 self.Save_Table_Button.setEnabled(True) # теперь можно сохранять таблицу
                 self.Sessions_Table_Button.setEnabled(True)
                 
-                con = sqlite3.connect(self.db_path + self.file)
-                cur = con.cursor()
+                self.con = sqlite3.connect(self.db_path + self.file)
+                self.cur = self.con.cursor()
                 x = "SELECT name FROM sqlite_master WHERE type= 'table' "
-                self.result = cur.execute(x).fetchall()
-                self.result = cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
+                self.result = self.cur.execute(x).fetchall()
+                self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
                 self.result.sort(key=lambda x: (x[1], x[2], x[3]))
                 self.Team_Name_Text.setText("Таблица: " + self.file)
                 for i in range(len(self.result)):
@@ -158,11 +170,11 @@ class MyWidget(QMainWindow):
         for i in range(a):
             self.Main_Table.removeRow(0)
         self.Sessions_Table_Button.setEnabled(False)
-        con = sqlite3.connect(self.db_path + "Sessions")
-        cur = con.cursor()
+        self.con = sqlite3.connect(self.db_path + "Sessions")
+        self.cur = self.con.cursor()
         x = "SELECT name FROM sqlite_master WHERE type= 'table' "
-        self.result = cur.execute(x).fetchall()
-        self.result = cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
+        self.result = self.cur.execute(x).fetchall()
+        self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
         self.result.sort(key=lambda x: (x[1], x[2], x[3]))
         self.Team_Name_Text.setText("Расписание сессий")
         for i in range(len(self.result)):
