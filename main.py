@@ -1,4 +1,4 @@
-import sys
+import sys, os, shutil
 import sqlite3
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
@@ -66,6 +66,9 @@ class MyWidget(QMainWindow):
         self.New_Row.clicked.connect(self.newRow)
         self.Remove_Row.clicked.connect(self.removeRow)
         s = self
+        
+        self.exaple_path = "Example"
+        self.db_path = "db/"
     
     def newRow(self):
         self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
@@ -108,6 +111,7 @@ class MyWidget(QMainWindow):
         a = self.Main_Table.rowCount()
         for i in range(a):
             self.Main_Table.removeRow(0)
+        shutil.copy(self.exaple_path, self.db_path + self.new_filename)
     
     def loadTableAfter(self):
         self.type = "loadTable"
@@ -127,7 +131,7 @@ class MyWidget(QMainWindow):
                 self.Save_Table_Button.setEnabled(True) # теперь можно сохранять таблицу
                 self.Sessions_Table_Button.setEnabled(True)
                 
-                con = sqlite3.connect(self.file)
+                con = sqlite3.connect(self.db_path + self.file)
                 cur = con.cursor()
                 x = "SELECT name FROM sqlite_master WHERE type= 'table' "
                 self.result = cur.execute(x).fetchall()
@@ -154,7 +158,7 @@ class MyWidget(QMainWindow):
         for i in range(a):
             self.Main_Table.removeRow(0)
         self.Sessions_Table_Button.setEnabled(False)
-        con = sqlite3.connect("Sessions")
+        con = sqlite3.connect(self.db_path + "Sessions")
         cur = con.cursor()
         x = "SELECT name FROM sqlite_master WHERE type= 'table' "
         self.result = cur.execute(x).fetchall()
