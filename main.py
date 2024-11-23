@@ -333,35 +333,62 @@ class MyWidget(QMainWindow):
         self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
 
         for i in self.result:
-            print(i)
-            day = i[2]
-            print(day)
-            mounth = i[1]
-            if mounth == '09':
-                days[day - 1] *= 1
-            if mounth == '10':
-                days[day - 1 + 30] *= 1
-            if mounth == '11':
-                days[day - 1 + 61] *= 1
-            if mounth == '12':
-                days[day - 1 + 91] *= 1
-            if mounth == '01' or mounth == '1':
-                days[day - 1 + 122] *= 1
-            if mounth == '02' or mounth == '2':
-                days[day - 1 + 152] *= 1
-            if mounth == '03' or mounth == '3':
-                days[day - 1 + 183] *= 1
-            if mounth == '04' or mounth == '4':
-                days[day - 1 + 213] *= 1
-            if mounth == '05' or mounth == '5':
-                days[day - 1 + 244] *= 1
-            if mounth == '06' or mounth == '6':
-                days[day - 1 + 274] *= 1
-            if mounth == '07' or mounth == '7':
-                days[day - 1 + 305] *= 1
-            if mounth == '08' or mounth == '8':
-                days[day - 1 + 335] *= 1
+            l = [1,i[2],i[3]]
+            if l[1] == 9:
+                l[2] = int(l[2])
+            if l[1] == 10:
+                l[2] = int(l[2]) + 31
+            if l[1] == 11:
+                l[2] = int(l[2]) + 61
+            if l[1] == 12:
+                l[2] = int(l[2]) + 92
+            if l[1] == 1:
+                l[2] = int(l[2]) + 122
+            if l[1] == 2:
+                l[2] = int(l[2]) + 153
+            if l[1] == 3:
+                l[2] = int(l[2]) + 183
+            if l[1] == 4:
+                l[2] = int(l[2]) + 214
+            if l[1] == 5:
+                l[2] = int(l[2]) + 244
+            if l[1] == 6:
+                l[2] = int(l[2]) + 275
+            if l[1] == 7:
+                l[2] = int(l[2]) + 305
+            if l[1] == 8:
+                l[2] = int(l[2]) + 336
+            le = l[2]
+            l = [1,i[5],i[6]]
+            if l[1] == 9:
+                l[2] = int(l[2])
+            if l[1] == 10:
+                l[2] = int(l[2]) + 31
+            if l[1] == 11:
+                l[2] = int(l[2]) + 61
+            if l[1] == 12:
+                l[2] = int(l[2]) + 92
+            if l[1] == 1:
+                l[2] = int(l[2]) + 122
+            if l[1] == 2:
+                l[2] = int(l[2]) + 153
+            if l[1] == 3:
+                l[2] = int(l[2]) + 183
+            if l[1] == 4:
+                l[2] = int(l[2]) + 214
+            if l[1] == 5:
+                l[2] = int(l[2]) + 244
+            if l[1] == 6:
+                l[2] = int(l[2]) + 275
+            if l[1] == 7:
+                l[2] = int(l[2]) + 305
+            if l[1] == 8:
+                l[2] = int(l[2]) + 336
+            re = l[2]
 
+            for i in range(le - 14, re + 14):
+                days[i] = 0
+        print(days)
         wr = {'01: [1,1]',
               '02: [1,1]',
               '03: [1,1]',
@@ -377,7 +404,7 @@ class MyWidget(QMainWindow):
         self.con = sqlite3.connect(self.db_path + self.file)
         self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
         for i in self.result:
-            mounth = i[1]
+            mounth = i[2]
             if mounth == '09':
                 if 'поб' in i[4]:
                     wr['09'][0] += 1
@@ -440,8 +467,8 @@ class MyWidget(QMainWindow):
                     wr['08'][1] += 1
 
             for i in self.result:
-                day = i[2]
-                mounth = i[1]
+                day = i[3]
+                mounth = i[2]
                 if mounth == '09':
                     days[day - 1] *= wr['09'][0] / wr['09'][1]
                 if mounth == '10':
@@ -467,10 +494,7 @@ class MyWidget(QMainWindow):
                 if mounth == '08' or mounth == '8':
                     days[day - 1 + 335] *= wr['08'][0] / wr['08'][1]
 
-        print(days)
-        for i in days:
-            if i != max(days):
-                print(i)
+
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setText('Информация\n1\n2')
         msg.setWindowTitle('Результат')
