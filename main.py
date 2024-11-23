@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 class NewTabel(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("New File...")
+        self.setWindowTitle("New Table...")
         self.main = uic.loadUi('new_Tabel.ui', self)
         self.Buttons.accepted.connect(self.accept)
         self.Buttons.rejected.connect(self.reject)
@@ -31,7 +31,7 @@ class NewTabel(QDialog):
             Result TEXT
             )
             '''
-            s.NewTable()
+            s.newTable()
             self.hide()
 
     def reject(self):
@@ -92,48 +92,49 @@ class MyWidget(QMainWindow):
         super().__init__()
         self.setWindowTitle("Sport Oracle")
         
-        self.main = uic.loadUi('test.ui', self)
+        self.main = uic.loadUi('main.ui', self)
         self.Sessions_Table_Button.clicked.connect(self.sessionsBefore)
         self.Create_New_File_Button.clicked.connect(self.createNewFileAfter)
         self.Save_Table_Button.clicked.connect(self.saveTable)
         self.Load_Table_Button.clicked.connect(self.loadTableAfter)
-        self.New_Row.clicked.connect(self.newRow)
-        self.Remove_Row.clicked.connect(self.removeRow)
+        self.New_Row_Button.clicked.connect(self.newRow)
+        self.Remove_Row_Button.clicked.connect(self.removeRow)
         self.Combo_Box.currentTextChanged.connect(self.boxChange)
-        self.Update_Table.clicked.connect(self.New_Table)
-        self.Result_button.clicked.connect(self.results)
+        self.Update_Table_Button.clicked.connect(self.newTableWindow)
+        self.Result_Button.clicked.connect(self.results)
+        self.Main_Table.itemChanged.connect(self.change)
         s = self
+        
+        self.showButtons(False)
         
         self.exaple_path = "Example"
         self.db_path = "db/"
     
     def newRow(self):
         self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+        self.Save_Table_Button.setEnabled(True)
+        self.Error_Text.setText("")
     
     def removeRow(self):
+        self.Error_Text.setText("")
         if self.Main_Table.currentRow() == -1:
             self.Main_Table.removeRow(self.Main_Table.currentRow() + 1)
         else:
             self.Main_Table.removeRow(self.Main_Table.currentRow())
-    
-    def exportTable(self):
-        self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
-        if self.file.count(".") != 0:
-            self.file = self.file.split(".")
-            if self.file[-1] == "xls":
-                self.Team_Name_Text.setText("Таблица: " + self.file[0])
-                self.Error_Text.setText("")
-                self.Save_Table_Button.setEnabled(True) # теперь можно сохранять таблицу
-            else:
-                self.Error_Text.setText("Не правильное разрешение файла")
-        else:
-            self.Error_Text.setText("Не правильное разрешение файла")
+        if self.Main_Table.rowCount() == 0:
+            self.Save_Table_Button.setEnabled(False)
     
     def saveTable(self):
         a = self.Main_Table.rowCount()
-        self.Error_Text.setText("")
-        dmd = self.date.split('.')
-        x = self.cur.execute("DELETE FROM " + f"'{self.Combo_Box.currentText()}'").fetchall()
+        # try:
+        self.Error_Text.setText("Сохранено!")
+        if self.Combo_Box.count() > 0:
+            try:
+                x = self.cur.execute("DELETE FROM " + f"'{self.Combo_Box.currentText()}'").fetchall()
+            except:
+                x = self.cur.execute("DELETE FROM " + f"'{self.Combo_Box.itemText(0)}'").fetchall()
+        else:
+            self.Error_Text.setText("Сначала создайте таблицу")
         for i in range(1, a + 1):
             try:
                 if self.s != True:
@@ -149,6 +150,8 @@ class MyWidget(QMainWindow):
             except:
                 self.Error_Text.setText("Ошибка в " + str(i) + " строке")
             self.con.commit()
+        # except:
+            # self.Error_Text.setText("Ошибка сохранения")
     
     def createNewFileAfter(self):
         self.type = "createNewFile"
@@ -161,6 +164,8 @@ class MyWidget(QMainWindow):
         file.show()
     
     def newFile(self):
+        self.showButtons(True)
+        self.Save_Table_Button.setEnabled(False)
         self.Team_Name_Text.setText("Таблица: " + self.new_filename)
         self.Sessions_Table_Button.setEnabled(True)
         self.Save_Table_Button.setEnabled(True)
@@ -176,6 +181,7 @@ class MyWidget(QMainWindow):
     
     def loadTable(self):
         self.s = False
+        self.showButtons(True)
         self.file = QtWidgets.QFileDialog.getOpenFileName(self, 'Выбрать файл')[0].split("/")[-1]
         if self.file.count(".") == 0:
             if self.file != "":
@@ -184,13 +190,28 @@ class MyWidget(QMainWindow):
                 
                 self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()
                 self.Combo_Box.clear()
-
-                for i in range(len(self.yearsList)):
-
-                    if len(self.yearsList[i][0].split('-')) > 1:
-                        self.Combo_Box.addItem(str(self.yearsList[i][0]))
-                    else:
-                        self.Combo_Box.addItem(str(self.yearsList[i][0][0:5]) + "-20" + str(int(self.yearsList[i][0][7:9]) + 1))
+                
+                try:
+                    for i in range(len(self.yearsList)):
+                        if len(self.yearsList[i][0].split('-')) > 1:
+                            self.Combo_Box.addItem(str(self.yearsList[i][0]))
+                        else:
+                            self.Combo_Box.addItem(str(self.yearsList[i][0][0:5]) + "-20" + str(int(self.yearsList[i][0][7:9]) + 1))
+                    
+                    x = "SELECT name FROM sqlite_master WHERE type= 'table' "
+                    self.result = self.cur.execute(x).fetchall()
+                    if self.Combo_Box.count() > 0:
+                        self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.itemText(0)}'").fetchall()
+                    self.result.sort(key=lambda x: (x[1], x[2], x[3]))
+                    for i in range(len(self.result)):
+                        self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
+                    for i in range(len(self.result)):
+                        self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
+                        self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
+                        self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
+                        self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
+                except:
+                    pass
                     
                 a = self.Main_Table.rowCount()
                 for i in range(a):
@@ -200,18 +221,6 @@ class MyWidget(QMainWindow):
                 self.Error_Text.setText("")
                 self.Save_Table_Button.setEnabled(True) # теперь можно сохранять таблицу
                 self.Sessions_Table_Button.setEnabled(True)
-                
-                x = "SELECT name FROM sqlite_master WHERE type= 'table' "
-                self.result = self.cur.execute(x).fetchall()
-                self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.Combo_Box.currentText()}'").fetchall()
-                self.result.sort(key=lambda x: (x[1], x[2], x[3]))
-                for i in range(len(self.result)):
-                    self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
-                for i in range(len(self.result)):
-                    self.date = str(self.result[i][1]) + '.' + str(self.result[i][2])  + '.' + str(self.result[i][3])
-                    self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
-                    self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(str(self.result[i][4])))
-                    self.Main_Table.setItem(i, 2, QtWidgets.QTableWidgetItem(str(self.result[i][5])))
         else:
             self.Error_Text.setText("Не правильное разрешение файла")
     
@@ -246,6 +255,7 @@ class MyWidget(QMainWindow):
                 self.dateEnd = str(self.result[i][4]) + '.' + str(self.result[i][5]) + '.' + str(self.result[i][6])
                 self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
                 self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(self.dateEnd))
+    
     def sessionsBefore(self):
         self.type = "sessions"
         ses = Sure()
@@ -253,6 +263,7 @@ class MyWidget(QMainWindow):
     
     def sessions(self):
         self.s = True
+        self.showButtons(True)
         self.Sessions_Table_Button.setEnabled(False)
         self.con = sqlite3.connect(self.db_path + "Sessions")
         self.cur = self.con.cursor()
@@ -281,7 +292,6 @@ class MyWidget(QMainWindow):
             self.Main_Table.removeColumn(0)
         for i in range(2):
             self.Main_Table.insertColumn(0)
-        #()
         self.Main_Table.setHorizontalHeaderLabels(["Начало", "Конец"])
         for i in range(len(self.result)):
             self.Main_Table.insertRow(self.Main_Table.currentRow() + 1)
@@ -293,16 +303,18 @@ class MyWidget(QMainWindow):
             self.Main_Table.setItem(i, 0, QtWidgets.QTableWidgetItem(self.date))
             self.Main_Table.setItem(i, 1, QtWidgets.QTableWidgetItem(self.dateEnd))
 
-    def New_Table(self):
+    def newTableWindow(self):
         f = NewTabel()
         f.show()
-        pass
 
-    def NewTable(self):
+    def newTable(self):
         Flag = True
-        for i in self.yearsList:
-            if s.tablename == i[0]:
-                Flag = False
+        try:
+            for i in self.yearsList:
+                if s.tablename == i[0]:
+                    Flag = False
+        except:
+            pass
         if Flag:
             x = self.cur.execute(s.table)
             self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()
@@ -317,6 +329,17 @@ class MyWidget(QMainWindow):
         msg.setWindowTitle('Результат')
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
         retval = msg.exec_()
+    
+    def showButtons(self, flag):
+        self.Save_Table_Button.setEnabled(flag)
+        self.Combo_Box.setEnabled(flag)
+        self.Update_Table_Button.setEnabled(flag)
+        self.Result_Button.setEnabled(flag)
+        self.New_Row_Button.setEnabled(flag)
+        self.Remove_Row_Button.setEnabled(flag)
+    
+    def change(self):
+        self.Error_Text.setText("")
 
 
 def except_hook(cls, exception, traceback):
