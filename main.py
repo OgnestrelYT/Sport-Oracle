@@ -23,6 +23,7 @@ class NewTabel(QDialog):
             if len(self.text) != 9 or self.text[4] != '-' or count != 8 or (int(self.text[:4]) + 1 != int(self.text[5:])):
                 self.Error_Text.setText("Название указано неверно")
             else:
+                self.Error_Text.setText("")
                 s.table = '''CREATE TABLE IF NOT EXISTS''' + f"'{self.text}'" +'''(
                 id INTEGER ,
                 Year INTEGER ,
@@ -136,23 +137,23 @@ class MyWidget(QMainWindow):
                     x = self.cur.execute("DELETE FROM " + f"'{self.Combo_Box.currentText()}'").fetchall()
                 except:
                     x = self.cur.execute("DELETE FROM " + f"'{self.Combo_Box.itemText(0)}'").fetchall()
+                for i in range(0, a):
+                    try:
+                        if self.s != True:
+                            dmd = self.Main_Table.item(i - 1, 0).text().split('.')
+                            x = '''INSERT INTO''' + f"'{self.Combo_Box.currentText()}'" + '''(id, Year, Mounth, Day, Score, Result) VALUES(?,?,?,?,?,?);'''
+                            self.result = self.cur.execute(x, (i, dmd[0],dmd[1],dmd[2], self.Main_Table.item(i - 1, 1).text(), self.Main_Table.item(i - 1, 2).text())).fetchall()
+                        else:
+                            dmd = self.Main_Table.item(i - 1, 0).text().split('.')
+                            dmd2 = self.Main_Table.item(i - 1, 1).text().split('.')
+                            print(dmd, dmd2)
+                            x = '''INSERT INTO''' + f"'{self.Combo_Box.currentText()}'" + '''(id, Year, Mounth, Day, YearEnd, MounthEnd, DayEnd) VALUES(?,?,?,?,?,?,?);'''
+                            self.result = self.cur.execute(x, (i, dmd[0], dmd[1], dmd[2], dmd2[0], dmd2[1], dmd2[2])).fetchall()
+                    except:
+                        self.Error_Text.setText("Ошибка в " + str(i) + " строке")
+                    self.con.commit()
             else:
                 self.Error_Text.setText("Сначала создайте таблицу")
-            for i in range(1, a + 1):
-                try:
-                    if self.s != True:
-                        dmd = self.Main_Table.item(i - 1, 0).text().split('.')
-                        x = '''INSERT INTO''' + f"'{self.Combo_Box.currentText()}'" + '''(id, Year, Mounth, Day, Score, Result) VALUES(?,?,?,?,?,?);'''
-                        self.result = self.cur.execute(x, (i, dmd[0],dmd[1],dmd[2], self.Main_Table.item(i - 1, 1).text(), self.Main_Table.item(i - 1, 2).text())).fetchall()
-                    else:
-                        dmd = self.Main_Table.item(i - 1, 0).text().split('.')
-                        dmd2 = self.Main_Table.item(i - 1, 1).text().split('.')
-                        print(dmd, dmd2)
-                        x = '''INSERT INTO''' + f"'{self.Combo_Box.currentText()}'" + '''(id, Year, Mounth, Day, YearEnd, MounthEnd, DayEnd) VALUES(?,?,?,?,?,?,?);'''
-                        self.result = self.cur.execute(x, (i, dmd[0], dmd[1], dmd[2], dmd2[0], dmd2[1], dmd2[2])).fetchall()
-                except:
-                    self.Error_Text.setText("Ошибка в " + str(i) + " строке")
-                self.con.commit()
         except:
             self.Error_Text.setText("Ошибка сохранения")
     
