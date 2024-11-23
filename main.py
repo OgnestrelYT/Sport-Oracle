@@ -137,14 +137,21 @@ class MyWidget(QMainWindow):
                 a = self.Main_Table.rowCount()
                 for i in range(a):
                     self.Main_Table.removeRow(0)
-            
+                
+                self.con = sqlite3.connect(self.db_path + self.file)
+                self.cur = self.con.cursor()
+                
+                self.yearsList = self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+                self.Combo_Box.clear()
+                self.yearsList = list(self.yearsList)
+                for i in range(0, len(self.yearsList) - 1):
+                    self.Combo_Box.addItem(str(self.yearsList[i])[2:-3] + "/" + str(self.yearsList[i+1])[4:-3])
+
                 self.Team_Name_Text.setText("Таблица: " + self.file)
                 self.Error_Text.setText("")
                 self.Save_Table_Button.setEnabled(True) # теперь можно сохранять таблицу
                 self.Sessions_Table_Button.setEnabled(True)
                 
-                self.con = sqlite3.connect(self.db_path + self.file)
-                self.cur = self.con.cursor()
                 x = "SELECT name FROM sqlite_master WHERE type= 'table' "
                 self.result = self.cur.execute(x).fetchall()
                 self.result = self.cur.execute(''' SELECT *  FROM ''' + f"'{self.result[-1][0]}'").fetchall()
